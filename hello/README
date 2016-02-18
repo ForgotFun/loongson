@@ -1,0 +1,43 @@
+众所周知，pmon可以引导elf程序，所以理论上不需要用汇编就可以编写裸机程序。
+
+准备工作：
+1.配置交叉编译工具，步骤略。
+2.配置tftp server,步骤略。
+
+背景知识介绍：
+1.龙芯启动后的运行的代码位置是:0xbfc00000 (spi引导模式)。
+2.pmon引导的地址是0x80200000(大部分bootloader都是此地址)。
+3.gcc编译好的程序不能直接运行，因为内存映射不同，所以需要用ld工具重新映射地址空间。
+
+教程部分：
+1.从http://git.oschina.net/LuMingFeng/loongson下载hello的代码，cd hello执行make，makefile会自动拷贝hello到/tftpboot目录
+2.配置tftp server和设置本机的IP地址为 192.168.1.2
+3.设置pmon的环境变量，ctrl+c 进入pmon的命令模式，执行
+set syn0.ipaddr 192.168.1.1
+set al tftp://192.168.1.2/a.out
+假如出现env环境下，你的mac地址为IP地址是设置不了的，这种情况会出现在自己编译的pmon上，解决方案是执行
+set ethaddr ea:8e:10:a6:ec:93
+4.按主板上的复位键，运行程序，出现如下信息，说明成功了
+
+Loading file: tftp://192.168.1.2/a.out (elf)
+0x80200000/4112 + 0x80201010/4080(z) + 15 syms/
+Entry address is 80200008
+g root=/dev/hda1 console=tty
+   zero      at       v0       v1       a0       a1       a2       a3  
+ 00000000 00000000 00000000 00000000 00000003 a10ffd18 a10ffd28 8009b900
+    t0       t1       t2       t3       t4       t5       t6       t7  
+ 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+    s0       s1       s2       s3       s4       s5       s6       s7  
+ 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+    t8       t9       k0       k1       gp       sp       s8       ra  
+ 00000000 00000000 00000000 00000000 00000000 a10ffcf8 00000000 8005be30
+
+
+Hello! This is the 'hello' program!
+
+It was invoked with:
+Arg  0: g
+Arg  1: root=/dev/hda1
+Arg  2: console=tty
+
+佐须之男：嵌入式开发工程师，专注于网络设备相关的系统研发和定制。联系方式：18013582125 18114354589 （陆工）
