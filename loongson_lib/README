@@ -1,0 +1,4 @@
+loongson.lib.tar.gz 使用说明
+下载loongson.lib.tar.gz后，使用tftp或者wget下载到智龙的开发板，然后执行tar zxvf loongson.lib.tar.gz -C /lib 就可以正常运行。
+
+
